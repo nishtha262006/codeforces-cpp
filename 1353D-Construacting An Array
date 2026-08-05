@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+struct Segment {
+    int l, r;
+};
+
+struct Compare {
+    bool operator()(Segment a, Segment b) {
+        int lenA = a.r - a.l + 1;
+        int lenB = b.r - b.l + 1;
+
+        if (lenA == lenB)
+            return a.l > b.l;
+
+        return lenA < lenB;
+    }
+};
+
+int main() {
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+
+        vector<int> ans(n);
+
+        priority_queue<Segment, vector<Segment>, Compare> pq;
+
+        pq.push({0, n - 1});
+
+        int value = 1;
+
+        while (!pq.empty()) {
+
+            Segment cur = pq.top();
+            pq.pop();
+
+            int l = cur.l;
+            int r = cur.r;
+
+            int mid;
+
+            if ((r - l + 1) % 2 == 1)
+                mid = (l + r) / 2;
+            else
+                mid = (l + r - 1) / 2;
+
+            ans[mid] = value++;
+
+            if (l <= mid - 1)
+                pq.push({l, mid - 1});
+
+            if (mid + 1 <= r)
+                pq.push({mid + 1, r});
+        }
+
+        for (int x : ans)
+            cout << x << " ";
+
+        cout << "\n";
+    }
+
+    return 0;
+}
